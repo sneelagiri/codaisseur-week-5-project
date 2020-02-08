@@ -128,6 +128,15 @@ router.delete("/movie/:id", (req, res, next) => {
     })
     .catch(next);
 });
+// CRUD 6.) Delete all movies
+// Note: 3 rows of example data will be inserted after all movies are deleted
+router.delete("/movie", (req, res, next) => {
+  Movie.destroy({ where: {}, truncate: true })
+    .then(() => {
+      res.json("All Movies Deleted");
+    })
+    .catch(next);
+});
 app.listen(port, () => {
   console.log(`Listening on port: ${port}`);
 });
