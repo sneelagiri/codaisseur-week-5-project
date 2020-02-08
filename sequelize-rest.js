@@ -76,6 +76,17 @@ router.post("/movie", (req, res, next) => {
   }
 });
 
+// CRUD 2.) Read all movies
+router.get("/movie", (req, res, next) => {
+  const limit = Math.min(req.query.limit || 5, 500);
+  const offset = req.query.offset || 0;
+  Movie.findAndCountAll({ limit, offset })
+    .then(movies => {
+      res.json({ movies: movies.rows, total: movies.count });
+    })
+    .catch(next);
+});
+
 app.listen(port, () => {
   console.log(`Listening on port: ${port}`);
 });
