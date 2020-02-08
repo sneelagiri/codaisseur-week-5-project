@@ -87,6 +87,19 @@ router.get("/movie", (req, res, next) => {
     .catch(next);
 });
 
+// CRUD 3.) Read a single movie
+router.get("/movie/:id", (req, res, next) => {
+  Movie.findByPk(req.params.id)
+    .then(movie => {
+      if (!movie) {
+        res.status(404).end();
+      } else {
+        res.json(movie);
+      }
+    })
+    .catch(next);
+});
+
 app.listen(port, () => {
   console.log(`Listening on port: ${port}`);
 });
