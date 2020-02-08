@@ -39,9 +39,9 @@ db.sync()
   .then(() => {
     createExampleData();
   })
-  .then(() => {
+  /*   .then(() => {
     forPagination();
-  })
+  }) */
   .catch(console.error);
 
 // 3 rows of example data
@@ -68,7 +68,7 @@ createExampleData = () => {
   });
 };
 
-forPagination = () => {
+/* forPagination = () => {
   for (i = 0; i < 100; i++) {
     Movie.create({
       title: "repeat",
@@ -76,11 +76,11 @@ forPagination = () => {
       synopsis: "repeat"
     });
   }
-};
+}; */
 
 // CRUD 1.) Create a movie
 router.post("/movie", (req, res, next) => {
-  if (req.body.text === undefined || req.body.text.length === 0) {
+  if (req.body === undefined || req.body.length === 0) {
     res.status(400).end();
   } else {
     Movie.create(req.body)
