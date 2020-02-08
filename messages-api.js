@@ -2,9 +2,12 @@ const express = require("express");
 const app = express();
 const port = 3000;
 
+let badRequestCount = 0;
+resetCount = () => {
+  badRequestCount = 0;
+};
 app.use(express.json());
-
-app.post("/messages", (req, res) => {
+const middleware = (req, res) => {
   if (
     (req.body.text === undefined || req.body.text.length === 0) &&
     badRequestCount < 5
@@ -20,7 +23,10 @@ app.post("/messages", (req, res) => {
     console.log(req.body.text);
     res.json({ message: "I received your request body!" });
   }
-});
+};
+app.use(middleware);
+
+app.post("/messages", middleware, (req, res) => {});
 
 app.listen(port, () => {
   console.log(`Listening on port: ${port}`);
