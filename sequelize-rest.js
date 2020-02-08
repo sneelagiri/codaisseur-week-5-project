@@ -100,6 +100,19 @@ router.get("/movie/:id", (req, res, next) => {
     .catch(next);
 });
 
+// CRUD 4.) Update a single movie
+router.put("/movie/:id", (req, res, next) => {
+  Movie.findByPk(req.params.id)
+    .then(movie => {
+      if (movie) {
+        movie.update(req.body).then(movie => res.json(movie));
+      } else {
+        res.status(404).end();
+      }
+    })
+    .catch(next);
+});
+
 app.listen(port, () => {
   console.log(`Listening on port: ${port}`);
 });
