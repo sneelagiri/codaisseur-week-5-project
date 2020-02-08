@@ -1,9 +1,18 @@
+// Dependencies
 const Sequelize = require("sequelize");
+const express = require("express");
+const app = express();
+const { Router } = express;
+const router = new Router();
 const databaseUrl =
   process.env.DATABASE_URL ||
   "postgres://postgres:secret@localhost:5432/postgres"; //Created new container in Docker
+const port = process.env.PORT || 4000;
 const db = new Sequelize(databaseUrl);
+app.use(express.json());
+app.use(router);
 
+// Model Schema
 const Movie = db.define(
   "movie",
   {
@@ -20,30 +29,54 @@ const Movie = db.define(
       field: "movie_synopsis"
     }
   },
-  { tableName: "movies" }
+  { tableName: "movie_details" }
 );
-
+// Sync
 db.sync()
   .then(() => {
     console.log("Schema will be updated here");
   })
+  .then(() => {
+    createExampleData();
+  })
   .catch(console.error);
 
-Movie.create({
-  title: "Life of Pi",
-  yearOfRelease: 2012,
-  synopsis: "Boy shares a boat with a lion in the middle of a sea"
-});
-Movie.create({
-  title: "Slumdog Millionaire",
-  yearOfRelease: 2008,
-  synopsis: "Man wins competition because of tragic memories"
-});
-Movie.create({
-  title: "My Name is Khan",
-  yearOfRelease: 2010,
-  synopsis:
-    "Man's son dies because of discrimination post 9/11. Man embarks on a journey to change society."
+// 3 rows of example data
+createExampleData = () => {
+  Movie.findAll().then(movies => {
+    if (movies.length === 0) {
+      Movie.create({
+        title: "Life of Pi",
+        yearOfRelease: 2012,
+        synopsis: "Boy shares a boat with a lion in the middle of a sea"
+      });
+      Movie.create({
+        title: "Slumdog Millionaire",
+        yearOfRelease: 2008,
+        synopsis: "Man wins competition because of tragic memories"
+      });
+      Movie.create({
+        title: "My Name is Khan",
+        yearOfRelease: 2010,
+        synopsis:
+          "Man's son dies because of discrimination post 9/11. Man embarks on a journey to change society."
+      });
+    }
+  });
+};
+
+// CRUD 1.) Create a movie
+router.post("/movie", (req, res, next) => {
+  if (req.body.text === undefined || req.body.text.length === 0) {
+    res.status(400).end();
+  } else {
+    Movie.create(req.body)
+      .then(movie => res.json(movie))
+      .catch(next);
+  }
 });
 
-module.exports = db;
+app.listen(port, () => {
+  console.log(`Listening on port: ${port}`);
+});
+module.exports = { db, router };
