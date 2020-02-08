@@ -39,6 +39,9 @@ db.sync()
   .then(() => {
     createExampleData();
   })
+  .then(() => {
+    forPagination();
+  })
   .catch(console.error);
 
 // 3 rows of example data
@@ -63,6 +66,16 @@ createExampleData = () => {
       });
     }
   });
+};
+
+forPagination = () => {
+  for (i = 0; i < 100; i++) {
+    Movie.create({
+      title: "repeat",
+      yearOfRelease: 2020,
+      synopsis: "repeat"
+    });
+  }
 };
 
 // CRUD 1.) Create a movie
