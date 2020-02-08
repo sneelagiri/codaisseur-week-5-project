@@ -112,7 +112,22 @@ router.put("/movie/:id", (req, res, next) => {
     })
     .catch(next);
 });
-
+// CRUD 5.) Delete a single movie
+router.delete("/movie/:id", (req, res, next) => {
+  Movie.destroy({
+    where: {
+      id: req.params.id
+    }
+  })
+    .then(numDeleted => {
+      if (numDeleted) {
+        res.json("Movie Deleted");
+      } else {
+        res.status(404).end();
+      }
+    })
+    .catch(next);
+});
 app.listen(port, () => {
   console.log(`Listening on port: ${port}`);
 });
